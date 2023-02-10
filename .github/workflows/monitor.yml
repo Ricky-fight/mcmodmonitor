@@ -1,0 +1,62 @@
+name: Monitor
+      
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 16 * * *'
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    name: Monitor
+    permissions:
+      issues: write
+
+    steps:
+      - name: Get Date
+        run: echo "REPORT_DATE=$(TZ=':Asia/Beijing' date '+%Y-%m-%d %T')" >> $GITHUB_ENV
+
+      - name: Checkout main
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.11.0'
+          cache: 'pip'
+       
+      - name: Install Dependencies 
+        run: pip install -r requirements.txt
+        
+      - name: Cache fingerprints
+        uses: actions/cache@v3
+        with:
+          key: fingerprint
+          path: ./fingerprint.cache
+      
+      - name: show files in workdir
+        run: ls -la
+      
+      - name: Run Monitor
+        id: monitor
+        run: python main.py
+        env:
+          CURSEFORGE_APPKEY: ${{ secrets.CURSEFORGE_APPKEY }}
+
+      - name: Read report
+        id: report
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./report.md
+          
+      - name: Create Issue
+        uses: imjohnbo/issue-bot@3daae12aa54d38685d7ff8459fc8a2aee8cea98b
+        with:
+          title: "${{env.REPORT_DATE}} 模组更新监控"
+          body: ${{steps.report.outputs.content}}
+          pinned: false
+          close-previous: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
