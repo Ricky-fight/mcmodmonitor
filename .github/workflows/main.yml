@@ -1,0 +1,23 @@
+name: Monitor
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      
+      - uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.11.0'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      
+      - name: Run Monitor
+      - run: python main.py
+      
