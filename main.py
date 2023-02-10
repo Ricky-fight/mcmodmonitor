@@ -74,7 +74,7 @@ def run():
     with open(REPORT_NAME, "w", encoding='utf8') as f:
         f.write(text)
         print(text)
-    cache.save()
+    # cache.save()
     # Set report name
     if 'GITHUB_OUTPUT' in os.environ.keys():
         with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
