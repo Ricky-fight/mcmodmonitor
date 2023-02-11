@@ -33,8 +33,9 @@ jobs:
       - name: Cache fingerprints
         uses: actions/cache@v3
         with:
-          key: fingerprint
+          key: fingerprint-${{env.REPORT_DATE}}
           path: ./fingerprint.cache
+          restore-key: fingerprint-
       
       - name: show files in workdir
         run: ls -la
