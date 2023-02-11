@@ -35,7 +35,7 @@ jobs:
         with:
           key: fingerprint-${{env.REPORT_DATE}}
           path: ./fingerprint.cache
-          restore-key: fingerprint-
+          restore-keys: fingerprint-
       
       - name: show files in workdir
         run: ls -la
