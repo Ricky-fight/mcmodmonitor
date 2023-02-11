@@ -30,8 +30,9 @@ jobs:
       - name: Install Dependencies 
         run: pip install -r requirements.txt
         
-      - name: Cache fingerprints
-        uses: actions/cache@v3
+      - name: Cache fingerprints restore
+        id: cache-restore
+        uses: actions/cache/restore@v3
         with:
           key: fingerprint
           path: ./fingerprint.cache
@@ -60,3 +61,10 @@ jobs:
           close-previous: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Cache fingerprints save
+        id: cache-save
+        uses: actions/cache/save@v3
+        with:
+          path: ./fingerprint.cache
+          key: ${{ steps.cache-restore.outputs.cache-primary-key }}
